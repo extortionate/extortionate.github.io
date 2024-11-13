@@ -1,0 +1,353 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: black;
+    color: #ffffff;
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden; /* Disable scrolling */
+    height: 100vh; /* Make sure the page takes full height */
+    position: relative;
+}
+
+/* Canvas for starfield background */
+#starfield {
+    position: fixed; /* Fixed to stay in place */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Always behind content */
+}
+
+/* Main container */
+.container {
+    position: fixed; /* Keep container fixed */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for perfect centering */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    text-align: center;
+}
+
+/* Big text glitch */
+#big-text {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 4rem;
+    color: #0066CC;
+    transition: opacity 1s ease;
+}
+
+#big-text.hidden {
+    opacity: 0;
+    transform: translateY(-50px); /* Moves the text 50px upward during fade out */
+}
+
+/* Subtitle */
+#subtitle {
+    color: #ffffff;
+    transition: opacity 1s ease;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 3rem;
+    transition: opacity 1s ease, transform 1s ease;
+    margin-top: 10px; /* Add space between big text and subtitle */
+    opacity: 1; /* Ensure it's visible */
+}
+
+#subtitle.hidden {
+    opacity: 0;
+    transform: translateY(-50px); /* Moves the subtitle 50px upward during fade out */
+}
+
+#subtitle2 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 2rem;
+    color: #ffffffb4;
+    margin-top: 150px; /* Add space between big text and subtitle */
+    animation: pulse 2s infinite; /* Glowing pulse effect */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), /* Outer glow */
+                 0 0 20px rgba(255, 255, 255, 0.6), /* Larger outer glow */
+                 0 0 30px rgba(0, 78, 151, 0.8),   /* Color glow (light blue) */
+                 0 0 40px rgba(0, 78, 151, 0.6);   /* Extend color glow */
+}
+
+/* Pulse animation for the glow effect */
+@keyframes pulse {
+    0% {
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.5),
+                     0 0 5px rgba(255, 255, 255, 0.6),
+                     0 0 10px rgba(0, 78, 151, 0.8),
+                     0 0 20px rgba(0, 78, 151, 0.6);
+    }
+    50% {
+        text-shadow: 0 0 5px rgba(255, 255, 255, 1),
+                     0 0 10px rgba(255, 255, 255, 0.8),
+                     0 0 20px rgba(0, 78, 151, 1),
+                     0 0 30px rgba(0, 78, 151, 0.8);
+    }
+    100% {
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.5),
+                     0 0 5px rgba(255, 255, 255, 0.6),
+                     0 0 10px rgba(0, 78, 151, 0.8),
+                     0 0 20px rgba(0, 78, 151, 0.6);
+    }
+}
+
+#subtitle2.hidden2 {
+    opacity: 0;
+    transform: translateY(-50px); /* Moves the subtitle 50px upward during fade out */
+}
+
+#subtitle, #subtitle2 {
+    transition: opacity 2s ease, transform 2s ease;
+}
+
+/* Slide styling */
+.slide {
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out; /* Smooth transition for both opacity and transform */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95); /* Initial state, slightly scaled down */
+    text-align: center;
+    pointer-events: none; /* Disable interaction when hidden */
+}
+
+.slide-content {
+    display: flex; /* Arrange title and content in a column */
+    flex-direction: column; /* Stack the title on top of the content */
+    align-items: flex-start; /* Align items to the left */
+    text-align: left; /* Left align text */
+}
+
+/* New wrapper to handle image and bullet points side by side */
+.content-wrapper {
+    display: flex; /* Arrange image and bullet points in a row */
+    align-items: flex-start; /* Align items to the top */
+    margin-top: 10px; /* Space between title and content */
+}
+
+.slide img {
+    -webkit-user-drag: none; /* For Safari/Chrome */
+    pointer-events: none; /* Disable interaction */
+    width: 60%; /* Adjust size as needed */
+    margin-right: 20px; /* Space between image and text */
+    border-radius: 20px;
+}
+
+.slide h3 {
+    font-family: monospace;
+    font-size: 1.5rem; /* Adjust font size */
+    color: #ffffff; /* Match your theme */
+    margin-bottom: 10px; /* Space between heading and image */
+}
+
+/* Bullet points styling */
+.bullet-points {
+    font-size: 1.2rem;
+    list-style-type: disc; /* Bullet points */
+    padding-left: 20px; /* Indent bullets */
+    color: #ffffff; /* Match your theme */
+    margin: 0; /* Remove default margin */
+    line-height: 1.5; /* Increase line height for better spacing */
+}
+
+.bullet-points li {
+    margin-bottom: 20px; /* Space between bullet points */
+}
+
+.slide.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1); /* Bring the slide into full size */
+    pointer-events: auto; /* Enable interaction when visible */
+}
+
+.slide.hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95); /* Fade out while slightly shrinking */
+    pointer-events: none; /* Disable interaction */
+}
+
+.slide.visible2 {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1); /* Bring the slide into full size */
+    pointer-events: auto; /* Enable interaction when visible */
+}
+
+.slide.visible .play-pause-btn {
+    visibility: visible; /* Only visible on active slides */
+    pointer-events: auto; /* Enable interaction */
+}
+
+.slide.hidden2 {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95); /* Fade out while slightly shrinking */
+    pointer-events: none; /* Disable interaction */
+}
+
+.hidden2 {
+    opacity: 0;
+    transform: translateY(-50px); /* Moves the subtitle upward during fade out */
+}
+
+/* Slide counter styling */
+.slide-counter {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    font-size: 1.5rem;
+    color: #ffffff;
+    z-index: 2; /* Ensure it appears above other content */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 3.5s ease; /* Fade in effect */
+}
+
+.mute-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem; /* Adjust size for better visibility */
+    cursor: pointer;
+    margin-left: 10px; /* Space between counter and button */
+    color: white; /* Make sure it contrasts with the background */
+}
+
+.slide-counter.visible {
+    opacity: 1; /* Show when necessary */
+}
+
+* {
+    user-select: none; /* Prevent selection */
+    -webkit-user-select: none; /* For Safari */
+    -moz-user-select: none; /* For Firefox */
+    -ms-user-select: none; /* For IE/Edge */
+}
+
+.bullet-points .tts {
+    font-family: monospace;
+    
+}
+
+/* Enhanced Notification Box */
+.notify-box {
+    height: 90px;
+    width: 140px; /* Adjust this value as needed */
+    background-color: rgb(255, 255, 255);
+    padding: 5px 5px;
+    border-radius: 20px;
+    position: absolute;
+    top: 425px;
+    left: 435px;
+    font-size: 1rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 1.5s ease, right 1.7s ease, transform 0.5s ease;
+    transform: scale(0.8);
+    border:2px solid rgb(0, 51, 128);
+    display: flex;
+    align-items: center;
+    white-space: normal; /* Change to normal to allow wrapping */
+    box-sizing: border-box; /* Include padding and border in width/height */
+    overflow: hidden; /* Control overflow behavior */
+}
+
+.speaker-gif {
+    margin-bottom: 1px;
+    margin-left: 30px; /* Add some space between the GIFs */
+    max-width: 100%; /* Allow the image to scale down if needed */
+    height: 100px; /* Maintain aspect ratio */
+    display: block; /* Ensure it behaves as a block element */
+}
+
+/* Glowing effect */
+.notify-box.show {
+    opacity: 1; /* Fades in */
+    right: 0; /* Slides into view */
+    transform: scale(1); /* Grows to full size */
+    box-shadow: 0 0 10px rgb(0, 77, 128), 0 0 20px rgb(0, 77, 128); /* Glow effect */
+}
+
+.notify-box.hide {
+    opacity: 0; /* Fades out */
+    right: -200px; /* Slide out to the left */
+    transform: scale(0.8); /* Shrink as it fades out */
+}
+
+.additional-text {
+    font-family: monospace;
+    font-size: 1.7em; /* Adjust the font size */
+    color: #ffffff; /* Change the text color */
+    position: absolute; /* Position the text absolutely */
+    left: 3%; /* Center horizontally */
+    top: 420px; /* Adjust the vertical position */
+    transform: translateX(-50%); /* Adjust for the width of the element */
+    margin-top: 10px; /* Add some space above the text */
+    text-align: center; /* Center the text */
+}
+
+.sub-text {
+    font-family: monospace;
+    font-size: 1.2em; /* Adjust the font size */
+    color: #ffffff; /* Change the text color */
+    text-align: center; /* Center the text */
+    position: absolute; /* Position the text absolutely */
+    left: 12%; /* Center horizontally */
+    top: 450px; /* Adjust the vertical position */
+    transform: translateX(-50%); /* Adjust for the width of the element */
+    margin-top: 10px; /* Add some space above the text */
+}
+
+.sub-text a {
+    color: #0066CC; /* Blue color */
+    text-decoration: none;
+}
+
+.sub-text a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+.blue-text {
+    color: rgb(0, 162, 255); /* Change the text color to blue */
+}
+
+/* Play/Pause button styling */
+.play-pause-btn {
+    visibility: hidden; /* Hidden by default */
+    pointer-events: none; /* Disable interaction */
+    font-family:Arial, Helvetica, sans-serif;
+    pointer-events: auto; /* Ensure buttons are clickable */
+    width: 130px;
+    position: absolute;
+    top: 420px;
+    left: 53%;
+    transform: translateX(-50%);
+    background-color: #0066CC;
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.play-pause-btn:hover {
+    background-color: #004891;
+}
+
+.bullet-points .tts {
+    font-family: monospace;
+    pointer-events: auto; /* Ensure bullet points are clickable */
+}
