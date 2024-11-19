@@ -157,7 +157,37 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentUtterance = null;
     let selectedVoice = null;
     let voices = [];
+    const audioFiles = [
+        'audio/slide1.wav', // Audio for slide 1
+        'audio/slide2.wav', // Audio for slide 2
+        'audio/slide3.wav', // Audio for slide 3
+        'audio/slide4.wav', // Audio for slide 4
+        'audio/slide5.wav', // Audio for slide 5
+        'audio/slide6.wav', // Audio for slide 6
+        'audio/slide7.wav', // Audio for slide 7
+        'audio/slide8.wav'  // Audio for slide 8
+    ];
     
+    let currentAudio = null;
+
+    function playAudioForSlide(slideIndex) {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+
+        const audio = new Audio(audioFiles[slideIndex]);
+        currentAudio = audio;
+
+        audio.play().catch(error => {
+            console.error('Error playing audio:', error);
+        });
+
+        audio.onended = () => {
+            updatePlayPauseButton(slideIndex, 'PLAY');
+        };
+    }
+
     function playTTSForSlide(slideIndex) {
     stopTTS();
 
@@ -221,11 +251,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     }
 
-    function updatePlayPauseButton(slideIndex, text) {
-    const button = slides[slideIndex].querySelector('.play-pause-btn');
-    if (button) {
-        button.textContent = text;
-    }
+     function updatePlayPauseButton(slideIndex, text) {
+        const button = slides[slideIndex].querySelector('.play-pause-btn');
+        if (button) {
+            button.textContent = text;
+        }
     }
 
     function resetPlayPauseButtons() {
@@ -235,14 +265,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.querySelectorAll('.play-pause-btn').forEach((button, index) => {
-    button.addEventListener('click', () => {
-        if (isSpeaking && currentSlideIndex === index) {
-            stopTTS(); 
-        } else {
-            playTTSForSlide(index); 
+        button.addEventListener('click', () => {
+            if (currentAudio && !currentAudio.paused && currentAudio.src.includes(audioFiles[index])) {
+                currentAudio.pause();
+                updatePlayPauseButton(index, 'PLAY');
+            } else {
+                playAudioForSlide(index);
+                updatePlayPauseButton(index, 'PAUSE');
+            }
+        });
+    });
+
+    function stopCurrentAudio() {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
         }
-    });
-    });
+    }
+
+    window.addEventListener('beforeunload', stopCurrentAudio);
 
     function updateSlideVisibility(slideIndex) {
     hideAllPlayPauseButtons();
