@@ -287,6 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('beforeunload', stopCurrentAudio);
 
     function updateSlideVisibility(slideIndex) {
+    stopCurrentAudio();
     hideAllPlayPauseButtons();
     showPlayPauseButton(slideIndex);
     }
@@ -319,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function () {
         isTransitioning = true;
 
         stopTTS();
+        stopCurrentAudio();
     
         if (currentSlide >= slides.length - 1) {
             isTransitioning = false;
@@ -356,6 +358,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isTransitioning) return;
         isTransitioning = true;
     
+        stopCurrentAudio();
+        
         if (currentSlide <= 0) {
             currentSlide = -1;
             bigText.classList.remove('hidden');
